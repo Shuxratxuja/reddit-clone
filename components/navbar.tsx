@@ -14,6 +14,7 @@ import { Input } from "@heroui/input";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import * as actions from '@/actions'
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -25,8 +26,13 @@ import {
   SearchIcon,
   Logo,
 } from "@/components/icons";
+import { auth } from "@/auth";
+import Image from "next/image";
 
-export const Navbar = () => {
+export const Navbar = async () => {
+
+  const session = await auth()
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -55,6 +61,7 @@ export const Navbar = () => {
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
             <p className="font-bold text-inherit">ACME</p>
+            {/* {JSON.stringify(session?.user)} */}
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
@@ -62,9 +69,21 @@ export const Navbar = () => {
       <NavbarContent>
         {searchInput}
 
-        <div>
-          <Button color="primary">Sign in</Button>
-        </div>
+
+
+        {!session?.user ?
+          <form action={actions.signIn}>
+            <Button type="submit" color="primary">Sign in</Button>
+          </form>
+          :
+          <>
+            <Image className="rounded-full" height={50} width={50} alt={session?.user?.name || ''} src={session?.user?.image || ''} />
+            <form action={actions.signOut}>
+              <Button type="submit" color="danger">Sign out</Button>
+            </form>
+          </>
+        }
+
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
