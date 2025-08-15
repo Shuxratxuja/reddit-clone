@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import { Counter } from "@/components/counter";
-import { AuthProviders } from "./about/provider";
+import { AuthProviders } from "../providers/provider";
 
 export const metadata: Metadata = {
   title: {

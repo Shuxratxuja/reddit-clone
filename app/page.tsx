@@ -9,6 +9,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@heroui/modal'
+import * as action from '@/actions'
 
 import { title, subtitle } from "@/components/primitives";
 import PostCard from "@/components/post-card";
@@ -16,7 +17,8 @@ import { Button } from "@heroui/button";
 import { Plus } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from "@heroui/input";
-import React from "react";
+import React, { useActionState } from "react";
+import { error } from "console";
 
 const topics = [
   {
@@ -43,6 +45,7 @@ const topics = [
 
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [state, actions] = useActionState(action.createTopic, { error: {} })
 
   return (
     <section className="py-8 md:py-10">
@@ -72,31 +75,44 @@ export default function Home() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Create topic</ModalHeader>
-              <ModalBody>
-                <Input
-                  label="Topic name"
-                  placeholder="Topic name..."
-                  variant="bordered"
-                />
-                <Input
-                  label="Description"
-                  placeholder="Enter your Description"
-                  type="text"
-                  variant="bordered"
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Create
-                </Button>
-              </ModalFooter>
+              <form action={actions}>
+                <ModalBody>
+                  <Input
+                    name="name"
+                    isInvalid={(state.error.name?.length ?? 0) > 0}
+                    labelPlacement="outside"
+                    label="Topic name"
+                    placeholder="Topic name..."
+                    variant="bordered"
+                  />
+                  <Input
+                    isInvalid={(state.error.description?.length ?? 0) > 0}
+                    name="description"
+                    labelPlacement="outside"
+                    label="Description"
+                    placeholder="Enter your Description"
+                    type="text"
+                    variant="bordered"
+                  />
+
+                  {state.error.name || state.error.description ? <div className="p-3 border-red-500 bg-red-200 rounded-md">
+                    <p>{state.error.name?.join(', ')}</p>
+                    <p>{state.error.description?.join(', ')}</p>
+                  </div> : null}
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button type="submit" color="primary" onPress={onClose}>
+                    Create
+                  </Button>
+                </ModalFooter>
+              </form>
             </>
           )}
         </ModalContent>
       </Modal>
-    </section>
+    </section >
   );
 }

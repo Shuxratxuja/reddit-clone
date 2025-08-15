@@ -15,7 +15,7 @@ import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
 import * as actions from '@/actions'
-
+import { Popover, PopoverTrigger, PopoverContent } from "@heroui/popover";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
@@ -28,6 +28,7 @@ import {
 } from "@/components/icons";
 import { auth } from "@/auth";
 import Image from "next/image";
+import { path } from "@/helpers/path";
 
 export const Navbar = async () => {
 
@@ -65,25 +66,28 @@ export const Navbar = async () => {
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
-
       <NavbarContent>
         {searchInput}
-
-
-
-        {!session?.user ?
-          <form action={actions.signIn}>
-            <Button type="submit" color="primary">Sign in</Button>
-          </form>
-          :
-          <>
-            <Image className="rounded-full" height={50} width={50} alt={session?.user?.name || ''} src={session?.user?.image || ''} />
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <Popover placement="left">
+          <PopoverTrigger>
+            {!session?.user ?
+              <form action={actions.signIn}>
+                <Button type="submit" color="primary">Sign in</Button>
+              </form>
+              :
+              <>
+                <Image className="rounded-full" height={50} width={50} alt={session?.user?.name || ''} src={session?.user?.image || ''} />
+              </>
+            }
+          </PopoverTrigger>
+          <PopoverContent>
             <form action={actions.signOut}>
-              <Button type="submit" color="danger">Sign out</Button>
+              <Button type="submit" color="default">Sign out</Button>
             </form>
-          </>
-        }
-
+          </PopoverContent>
+        </Popover>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -107,7 +111,7 @@ export const Navbar = async () => {
                       ? "danger"
                       : "foreground"
                 }
-                href="#"
+                href={path.home()}
                 size="lg"
               >
                 {item.label}
