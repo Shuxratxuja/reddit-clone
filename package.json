@@ -24,7 +24,7 @@
     "@heroui/switch": "2.2.22",
     "@heroui/system": "2.4.20",
     "@heroui/theme": "2.4.20",
-    "@next-auth/prisma-adapter": "^1.0.7",
+    "@auth/prisma-adapter": "^1.0.0",
     "@prisma/client": "^6.13.0",
     "@react-aria/ssr": "3.9.10",
     "@react-aria/visually-hidden": "3.8.26",

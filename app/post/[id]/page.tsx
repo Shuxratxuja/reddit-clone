@@ -10,9 +10,9 @@ import CommentForm from '@/components/comment-form';
 import Comment from '@/components/comment';
 
 interface PostPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 async function getPost(id: string) {
@@ -24,7 +24,7 @@ async function getPost(id: string) {
         topic: true,
         comments: {
           where: {
-            parentId: null, 
+            parentId: null,
           },
           include: {
             user: true,
@@ -53,7 +53,8 @@ async function getPost(id: string) {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const post = await getPost(params.id)
+  const { id } = await params
+  const post = await getPost(id)
   const session = await auth()
 
   if (!post) {
