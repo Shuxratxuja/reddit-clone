@@ -38,7 +38,7 @@ export const Navbar = async () => {
     <Input
       aria-label="Search"
       classNames={{
-        inputWrapper: "bg-default-100",
+        inputWrapper: "bg-gray-100 dark:bg-gray-800 border-0",
         input: "text-sm",
       }}
       endContent={
@@ -47,54 +47,82 @@ export const Navbar = async () => {
         </Kbd>
       }
       labelPlacement="outside"
-      placeholder="Search..."
+      placeholder="Search Reddit"
       startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+        <SearchIcon className="text-base text-gray-400 pointer-events-none flex-shrink-0" />
       }
       type="search"
     />
   );
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
+    <HeroUINavbar maxWidth="xl" position="sticky" className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
-            {/* {JSON.stringify(session?.user)} */}
+          <NextLink className="flex justify-start items-center gap-2" href="/">
+            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-lg">R</span>
+            </div>
+            <p className="font-bold text-inherit text-xl">reddit</p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent>
+
+      <NavbarContent className="flex-1 justify-center">
         {searchInput}
       </NavbarContent>
+
       <NavbarContent justify="end">
-        <Popover placement="left">
+        <ThemeSwitch />
+        <Popover placement="bottom-end">
           <PopoverTrigger>
-            {!session?.user ?
+            {!session?.user ? (
               <form action={actions.signIn}>
-                <Button type="submit" color="primary">Sign in</Button>
+                <Button type="submit" color="primary" className="bg-orange-500 hover:bg-orange-600">
+                  Sign in
+                </Button>
               </form>
-              :
-              <>
-                <Image className="rounded-full" height={50} width={50} alt={session?.user?.name || ''} src={session?.user?.image || ''} />
-              </>
-            }
+            ) : (
+              <Button
+                variant="light"
+                className="p-0 min-w-0 w-8 h-8"
+              >
+                <Image
+                  className="rounded-full"
+                  height={32}
+                  width={32}
+                  alt={session?.user?.name || ''}
+                  src={session?.user?.image || ''}
+                />
+              </Button>
+            )}
           </PopoverTrigger>
           <PopoverContent>
-            <form action={actions.signOut}>
-              <Button type="submit" color="default">Sign out</Button>
-            </form>
+            <div className="p-2">
+              <div className="flex items-center gap-2 p-2 border-b border-gray-200 dark:border-gray-700">
+                <Image
+                  className="rounded-full"
+                  height={32}
+                  width={32}
+                  alt={session?.user?.name || ''}
+                  src={session?.user?.image || ''}
+                />
+                <div>
+                  <p className="font-semibold text-sm">{session?.user?.name}</p>
+                  <p className="text-xs text-gray-500">{session?.user?.email}</p>
+                </div>
+              </div>
+              <form action={actions.signOut}>
+                <Button type="submit" color="default" variant="light" className="w-full justify-start">
+                  Sign out
+                </Button>
+              </form>
+            </div>
           </PopoverContent>
         </Popover>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>
 

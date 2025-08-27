@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Reddit Clone",
+  description: "A Reddit clone built with Next.js and HeroUI",
   navItems: [],
   navMenuItems: [
     {

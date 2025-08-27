@@ -5,28 +5,18 @@ import { z } from "zod";
 const topicSchema = z.object({
   name: z
     .string()
-    .min(5, {
-      message: "Name 5tadan koproq xarf bolishi kerak",
+    .min(3, {
+      message: "Name 3tadan koproq xarf bolishi kerak",
     })
-    .regex(/^[a-zA-Z]+$/, {
-      message: "Name faqat xarflardan iborat bolishi kerak",
+    .regex(/^[a-zA-Z0-9_]+$/, {
+      message: "Name faqat harflar, raqamlar va underscore dan iborat bolishi kerak",
     }),
   description: z.string().min(10, {
-    message: "Descrioption 10dan ortiq bolishi kerak",
+    message: "Description 10dan ortiq bolishi kerak",
   }),
 });
 
-interface FormStateType {
-  error: {
-    name?: string[];
-    description?: string[];
-  };
-}
-
-export async function createTopic(
-  formState: FormStateType,
-  formData: FormData
-): Promise<FormStateType> {
+export async function createTopic(prevState: any, formData: FormData) {
   const data = {
     name: formData.get("name"),
     description: formData.get("description"),
@@ -35,20 +25,29 @@ export async function createTopic(
   const result = topicSchema.safeParse(data);
 
   if (!result.success) {
-    const error = result.error?.flatten().fieldErrors;
-
-    return { error };
+    return { error: result.error.flatten().fieldErrors };
   }
 
-  const response = await db.topic.create({
-    data: {
-      slug: result.data.name,
-      description: result.data.description,
-    },
-  });
+  try {
+    // Check if topic already exists
+    const existingTopic = await db.topic.findUnique({
+      where: { slug: result.data.name.toLowerCase() },
+    });
 
-  console.log(response);
+    if (existingTopic) {
+      return { error: { name: ['This community name already exists'] } };
+    }
 
-  return { error: {} };
-  // revalidate
+    const response = await db.topic.create({
+      data: {
+        slug: result.data.name.toLowerCase(),
+        description: result.data.description,
+      },
+    });
+
+    return { success: true, topic: response };
+  } catch (error) {
+    console.error('Error creating topic:', error);
+    return { error: { _form: ['Failed to create community'] } };
+  }
 }

@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix",
+    "seed": "npx tsx scripts/seed.ts"
   },
   "dependencies": {
     "@auth/core": "^0.18.1",
@@ -64,6 +65,7 @@
     "prettier": "3.5.3",
     "tailwind-variants": "2.0.1",
     "tailwindcss": "4.1.11",
+    "tsx": "^4.20.4",
     "typescript": "5.6.3"
   }
 }
